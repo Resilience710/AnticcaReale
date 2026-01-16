@@ -63,22 +63,27 @@ export function useShops(activeOnly: boolean = true) {
   useEffect(() => {
     async function fetchShops() {
       try {
-        const constraints: QueryConstraint[] = [];
-        if (activeOnly) {
-          constraints.push(where('isActive', '==', true));
-        }
-        constraints.push(orderBy('name'));
-
-        const q = query(collection(db, 'shops'), ...constraints);
+        // Fetch all shops and filter client-side to avoid index requirements
+        const q = query(collection(db, 'shops'));
         const snapshot = await getDocs(q);
         
-        const shopData = snapshot.docs.map((doc) => ({
+        let shopData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         })) as Shop[];
         
+        // Filter active only if needed
+        if (activeOnly) {
+          shopData = shopData.filter(shop => shop.isActive === true);
+        }
+        
+        // Sort by name
+        shopData.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        
+        console.log('Fetched shops (activeOnly=' + activeOnly + '):', shopData);
         setShops(shopData);
       } catch (err) {
+        console.error('Error fetching shops:', err);
         setError(err as Error);
       } finally {
         setLoading(false);
@@ -100,33 +105,8 @@ export function useProducts(filters?: FilterState, limitCount?: number) {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const constraints: QueryConstraint[] = [where('isActive', '==', true)];
-
-        // Apply filters that can be done in Firestore
-        if (filters?.category) {
-          constraints.push(where('category', '==', filters.category));
-        }
-        if (filters?.era) {
-          constraints.push(where('era', '==', filters.era));
-        }
-        if (filters?.shopId) {
-          constraints.push(where('shopId', '==', filters.shopId));
-        }
-
-        // Sort
-        if (filters?.sortBy === 'price-asc') {
-          constraints.push(orderBy('price', 'asc'));
-        } else if (filters?.sortBy === 'price-desc') {
-          constraints.push(orderBy('price', 'desc'));
-        } else {
-          constraints.push(orderBy('createdAt', 'desc'));
-        }
-
-        if (limitCount) {
-          constraints.push(limit(limitCount));
-        }
-
-        const q = query(collection(db, 'products'), ...constraints);
+        // Fetch all products and filter client-side to avoid index requirements
+        const q = query(collection(db, 'products'));
         const snapshot = await getDocs(q);
         
         let productData = snapshot.docs.map((doc) => ({
@@ -134,7 +114,21 @@ export function useProducts(filters?: FilterState, limitCount?: number) {
           ...doc.data(),
         })) as Product[];
 
-        // Client-side filters for things Firestore can't handle efficiently
+        console.log('Raw products from Firestore:', productData);
+
+        // Filter active only
+        productData = productData.filter(p => p.isActive === true);
+
+        // Apply filters client-side
+        if (filters?.category) {
+          productData = productData.filter(p => p.category === filters.category);
+        }
+        if (filters?.era) {
+          productData = productData.filter(p => p.era === filters.era);
+        }
+        if (filters?.shopId) {
+          productData = productData.filter(p => p.shopId === filters.shopId);
+        }
         if (filters?.minPrice !== undefined) {
           productData = productData.filter((p) => p.price >= filters.minPrice!);
         }
@@ -145,13 +139,34 @@ export function useProducts(filters?: FilterState, limitCount?: number) {
           const searchLower = filters.search.toLowerCase();
           productData = productData.filter(
             (p) =>
-              p.name.toLowerCase().includes(searchLower) ||
-              p.description.toLowerCase().includes(searchLower)
+              (p.name || '').toLowerCase().includes(searchLower) ||
+              (p.description || '').toLowerCase().includes(searchLower)
           );
         }
 
+        // Sort
+        if (filters?.sortBy === 'price-asc') {
+          productData.sort((a, b) => a.price - b.price);
+        } else if (filters?.sortBy === 'price-desc') {
+          productData.sort((a, b) => b.price - a.price);
+        } else {
+          // Sort by newest (createdAt desc)
+          productData.sort((a, b) => {
+            const dateA = (a.createdAt as any)?.toDate?.() || a.createdAt || new Date(0);
+            const dateB = (b.createdAt as any)?.toDate?.() || b.createdAt || new Date(0);
+            return new Date(dateB).getTime() - new Date(dateA).getTime();
+          });
+        }
+
+        // Apply limit
+        if (limitCount) {
+          productData = productData.slice(0, limitCount);
+        }
+
+        console.log('Filtered products (isActive=true):', productData);
         setProducts(productData);
       } catch (err) {
+        console.error('Error fetching products:', err);
         setError(err as Error);
       } finally {
         setLoading(false);
@@ -312,17 +327,25 @@ export async function getAllProducts(activeOnly: boolean = false): Promise<Produ
 
 // Fetch all shops (admin)
 export async function getAllShops(activeOnly: boolean = false): Promise<Shop[]> {
-  const constraints: QueryConstraint[] = [];
-  if (activeOnly) {
-    constraints.push(where('isActive', '==', true));
+  try {
+    let q;
+    if (activeOnly) {
+      q = query(collection(db, 'shops'), where('isActive', '==', true));
+    } else {
+      q = query(collection(db, 'shops'));
+    }
+    
+    const snapshot = await getDocs(q);
+    
+    const shops = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Shop[];
+    
+    // Sort by name client-side
+    return shops.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  } catch (error) {
+    console.error('Error fetching shops:', error);
+    return [];
   }
-  constraints.push(orderBy('name'));
-
-  const q = query(collection(db, 'shops'), ...constraints);
-  const snapshot = await getDocs(q);
-  
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Shop[];
 }

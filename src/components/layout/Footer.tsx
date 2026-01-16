@@ -52,24 +52,24 @@ export default function Footer() {
             <h3 className="font-semibold text-cream-100 mb-4">Bilgi</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-cream-300 hover:text-gold-500 transition-colors">
+                <Link to="/about" className="text-cream-300 hover:text-gold-500 transition-colors">
                   {TR.footer.about}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-cream-300 hover:text-gold-500 transition-colors">
+                <Link to="/contact" className="text-cream-300 hover:text-gold-500 transition-colors">
                   {TR.footer.contact}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-cream-300 hover:text-gold-500 transition-colors">
+                <Link to="/terms" className="text-cream-300 hover:text-gold-500 transition-colors">
                   {TR.footer.terms}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-cream-300 hover:text-gold-500 transition-colors">
+                <Link to="/privacy" className="text-cream-300 hover:text-gold-500 transition-colors">
                   {TR.footer.privacy}
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

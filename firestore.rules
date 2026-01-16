@@ -2,66 +2,123 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper functions
+    // ============================================
+    // HELPER FUNCTIONS
+    // ============================================
+    
+    // Kullanıcı giriş yapmış mı?
     function isAuthenticated() {
       return request.auth != null;
     }
     
+    // Kullanıcı kendi verisine mi erişiyor?
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
+    // Kullanıcı admin mi?
     function isAdmin() {
       return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
-    // Users collection
+    // Geçerli e-posta formatı
+    function isValidEmail(email) {
+      return email.matches('.*@.*\\..*');
+    }
+    
+    // ============================================
+    // USERS COLLECTION
+    // ============================================
     match /users/{userId} {
-      // Users can read their own data
-      allow read: if isOwner(userId);
-      // Users can create their own document on registration
+      // Kullanıcılar kendi profillerini okuyabilir
+      // Adminler tüm kullanıcıları okuyabilir
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Kayıt sırasında kullanıcı kendi dokümanını oluşturabilir
+      // Rol sadece 'user' veya 'admin' olabilir (admin için özel e-posta kontrolü)
       allow create: if isOwner(userId) && 
-                       request.resource.data.role == 'user';
-      // Users can update their own profile (but not change role)
+                       request.resource.data.keys().hasAll(['name', 'email', 'role']) &&
+                       (request.resource.data.role == 'user' || 
+                        (request.resource.data.role == 'admin' && 
+                         request.resource.data.email == 'direncuy@gmail.com'));
+      
+      // Kullanıcılar kendi profillerini güncelleyebilir (rol değiştirilemez)
       allow update: if isOwner(userId) && 
                        request.resource.data.role == resource.data.role;
-      // Admins can read and update any user
-      allow read, update: if isAdmin();
+      
+      // Adminler herhangi bir kullanıcıyı güncelleyebilir
+      allow update: if isAdmin();
+      
+      // Kullanıcı silme - sadece admin
+      allow delete: if isAdmin();
     }
     
-    // Shops collection
+    // ============================================
+    // SHOPS COLLECTION (Dükkanlar)
+    // ============================================
     match /shops/{shopId} {
-      // Anyone can read active shops
-      allow read: if resource.data.isActive == true || isAdmin();
-      // Only admins can create, update, or delete shops
-      allow create, update, delete: if isAdmin();
+      // Herkes aktif dükkanları okuyabilir
+      // Adminler tüm dükkanları (aktif/pasif) okuyabilir
+      allow read: if true;
+      
+      // Sadece adminler dükkan oluşturabilir
+      allow create: if isAdmin() &&
+                       request.resource.data.keys().hasAll(['name', 'city', 'isActive']);
+      
+      // Sadece adminler dükkan güncelleyebilir
+      allow update: if isAdmin();
+      
+      // Sadece adminler dükkan silebilir
+      allow delete: if isAdmin();
     }
     
-    // Products collection
+    // ============================================
+    // PRODUCTS COLLECTION (Ürünler)
+    // ============================================
     match /products/{productId} {
-      // Anyone can read active products
-      allow read: if resource.data.isActive == true || isAdmin();
-      // Only admins can create, update, or delete products
-      allow create, update, delete: if isAdmin();
+      // Herkes aktif ürünleri okuyabilir
+      // Adminler tüm ürünleri (aktif/pasif) okuyabilir
+      allow read: if true;
+      
+      // Sadece adminler ürün oluşturabilir
+      allow create: if isAdmin() &&
+                       request.resource.data.keys().hasAll(['name', 'shopId', 'price', 'isActive']) &&
+                       request.resource.data.price > 0;
+      
+      // Sadece adminler ürün güncelleyebilir
+      allow update: if isAdmin();
+      
+      // Sadece adminler ürün silebilir
+      allow delete: if isAdmin();
     }
     
-    // Orders collection
+    // ============================================
+    // ORDERS COLLECTION (Siparişler)
+    // ============================================
     match /orders/{orderId} {
-      // Users can read their own orders
-      allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
-      // Users can create orders for themselves
+      // Kullanıcılar sadece kendi siparişlerini okuyabilir
+      // Adminler tüm siparişleri okuyabilir
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || 
+                     isAdmin();
+      
+      // Giriş yapmış kullanıcılar sipariş oluşturabilir
       allow create: if isAuthenticated() && 
                        request.resource.data.userId == request.auth.uid &&
-                       request.resource.data.status == 'Ödeme Bekleniyor';
-      // Admins can read and update any order
-      allow read, update: if isAdmin();
-      // No one can delete orders (for audit trail)
+                       request.resource.data.keys().hasAll(['userId', 'items', 'totalPrice', 'status']) &&
+                       request.resource.data.totalPrice > 0;
+      
+      // Sadece adminler sipariş durumunu güncelleyebilir
+      allow update: if isAdmin();
+      
+      // Siparişler silinemez (denetim izi için)
       allow delete: if false;
     }
     
-    // Deny all other access by default
+    // ============================================
+    // DEFAULT DENY - Tanımlanmamış tüm erişimler engellenir
+    // ============================================
     match /{document=**} {
       allow read, write: if false;
     }

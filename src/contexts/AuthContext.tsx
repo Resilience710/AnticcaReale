@@ -7,9 +7,12 @@ import {
   onAuthStateChanged,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import { User } from '../types';
+
+// Admin emails - these users will automatically get admin role
+const ADMIN_EMAILS = ['direncuy@gmail.com'];
 
 interface AuthContextType {
   currentUser: FirebaseUser | null;
@@ -37,26 +40,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function fetchUserData(uid: string) {
-    const userDoc = await getDoc(doc(db, 'users', uid));
+  async function fetchUserData(uid: string, email?: string | null) {
+    const userDocRef = doc(db, 'users', uid);
+    const userDoc = await getDoc(userDocRef);
+    
     if (userDoc.exists()) {
-      setUserData({ ...userDoc.data(), uid } as User);
+      const data = userDoc.data();
+      
+      // Auto-promote to admin if email is in ADMIN_EMAILS list
+      if (email && ADMIN_EMAILS.includes(email.toLowerCase()) && data.role !== 'admin') {
+        await updateDoc(userDocRef, { role: 'admin', updatedAt: serverTimestamp() });
+        setUserData({ ...data, uid, role: 'admin' } as User);
+        console.log('User promoted to admin:', email);
+      } else {
+        setUserData({ ...data, uid } as User);
+      }
     }
   }
 
   async function login(email: string, password: string) {
     const result = await signInWithEmailAndPassword(auth, email, password);
-    await fetchUserData(result.user.uid);
+    await fetchUserData(result.user.uid, result.user.email);
   }
 
   async function register(email: string, password: string, name: string) {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     
+    // Check if user should be admin
+    const isAdminEmail = ADMIN_EMAILS.includes(email.toLowerCase());
+    
     // Create user document in Firestore
     const userDoc: Omit<User, 'uid'> = {
       name,
       email,
-      role: 'user',
+      role: isAdminEmail ? 'admin' : 'user',
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -68,6 +85,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     
     setUserData({ ...userDoc, uid: result.user.uid } as User);
+    
+    if (isAdminEmail) {
+      console.log('Admin account created:', email);
+    }
   }
 
   async function logout() {
@@ -83,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        await fetchUserData(user.uid);
+        await fetchUserData(user.uid, user.email);
       } else {
         setUserData(null);
       }

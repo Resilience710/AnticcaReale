@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Admin - Anticca</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-lg p-8 max-w-md w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Anticca Admin Setup</h1>
+        
+        <div id="status" class="mb-4 p-4 rounded-lg bg-blue-50 text-blue-700">
+            Checking user status...
+        </div>
+
+        <div id="userInfo" class="hidden mb-4 p-4 rounded-lg bg-gray-50">
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Name:</strong> <span id="userName"></span></p>
+            <p><strong>Current Role:</strong> <span id="userRole"></span></p>
+        </div>
+
+        <button id="makeAdminBtn" onclick="makeAdmin()" class="hidden w-full bg-amber-500 text-white py-3 rounded-lg font-medium hover:bg-amber-600 transition-colors">
+            Make Admin
+        </button>
+
+        <div id="registerSection" class="hidden">
+            <p class="text-gray-600 mb-4">User not found. Please register first:</p>
+            <input type="text" id="nameInput" placeholder="Full Name" class="w-full p-3 border rounded-lg mb-3">
+            <input type="password" id="passwordInput" placeholder="Password (min 6 chars)" class="w-full p-3 border rounded-lg mb-3">
+            <button onclick="registerAdmin()" class="w-full bg-green-500 text-white py-3 rounded-lg font-medium hover:bg-green-600 transition-colors">
+                Register as Admin
+            </button>
+        </div>
+
+        <a href="/" class="block mt-4 text-center text-amber-600 hover:underline">Go to Anticca</a>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyArg0ZchND1oauOq932hg-bX3JXUctdpW4",
+            authDomain: "anticcareale.firebaseapp.com",
+            projectId: "anticcareale",
+            storageBucket: "anticcareale.firebasestorage.app",
+            messagingSenderId: "394629292480",
+            appId: "1:394629292480:web:417db33b9fc0a0b91a2825"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const TARGET_EMAIL = 'direncuy@gmail.com';
+
+        window.db = db;
+        window.auth = auth;
+        window.TARGET_EMAIL = TARGET_EMAIL;
+
+        // Check if user exists
+        async function checkUser() {
+            const statusEl = document.getElementById('status');
+            const userInfoEl = document.getElementById('userInfo');
+            const makeAdminBtn = document.getElementById('makeAdminBtn');
+            const registerSection = document.getElementById('registerSection');
+
+            try {
+                // Query users collection for the email
+                const usersRef = collection(db, 'users');
+                const q = query(usersRef, where('email', '==', TARGET_EMAIL));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const userDoc = querySnapshot.docs[0];
+                    const userData = userDoc.data();
+                    
+                    document.getElementById('userEmail').textContent = userData.email;
+                    document.getElementById('userName').textContent = userData.name || 'N/A';
+                    document.getElementById('userRole').textContent = userData.role || 'user';
+                    
+                    userInfoEl.classList.remove('hidden');
+                    
+                    if (userData.role === 'admin') {
+                        statusEl.className = 'mb-4 p-4 rounded-lg bg-green-50 text-green-700';
+                        statusEl.textContent = '✓ User is already an admin!';
+                    } else {
+                        statusEl.className = 'mb-4 p-4 rounded-lg bg-yellow-50 text-yellow-700';
+                        statusEl.textContent = 'User found. Click button to make admin.';
+                        makeAdminBtn.classList.remove('hidden');
+                        window.userDocId = userDoc.id;
+                    }
+                } else {
+                    statusEl.className = 'mb-4 p-4 rounded-lg bg-orange-50 text-orange-700';
+                    statusEl.textContent = 'User not found in database. Register to create admin account.';
+                    registerSection.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-red-50 text-red-700';
+                statusEl.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        window.makeAdmin = async function() {
+            const statusEl = document.getElementById('status');
+            const makeAdminBtn = document.getElementById('makeAdminBtn');
+            
+            try {
+                makeAdminBtn.disabled = true;
+                makeAdminBtn.textContent = 'Updating...';
+                
+                await updateDoc(doc(db, 'users', window.userDocId), {
+                    role: 'admin'
+                });
+                
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-green-50 text-green-700';
+                statusEl.textContent = '✓ Successfully made admin! You can now login and access /admin';
+                document.getElementById('userRole').textContent = 'admin';
+                makeAdminBtn.classList.add('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-red-50 text-red-700';
+                statusEl.textContent = 'Error: ' + error.message;
+                makeAdminBtn.disabled = false;
+                makeAdminBtn.textContent = 'Make Admin';
+            }
+        }
+
+        window.registerAdmin = async function() {
+            const statusEl = document.getElementById('status');
+            const name = document.getElementById('nameInput').value;
+            const password = document.getElementById('passwordInput').value;
+            
+            if (!name || !password) {
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-red-50 text-red-700';
+                statusEl.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            if (password.length < 6) {
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-red-50 text-red-700';
+                statusEl.textContent = 'Password must be at least 6 characters';
+                return;
+            }
+
+            try {
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-blue-50 text-blue-700';
+                statusEl.textContent = 'Creating account...';
+
+                // Create auth user
+                const userCredential = await createUserWithEmailAndPassword(auth, TARGET_EMAIL, password);
+                const user = userCredential.user;
+
+                // Create user document with admin role
+                await setDoc(doc(db, 'users', user.uid), {
+                    name: name,
+                    email: TARGET_EMAIL,
+                    role: 'admin',
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-green-50 text-green-700';
+                statusEl.textContent = '✓ Admin account created! You can now login at /login and access /admin';
+                document.getElementById('registerSection').classList.add('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+                statusEl.className = 'mb-4 p-4 rounded-lg bg-red-50 text-red-700';
+                if (error.code === 'auth/email-already-in-use') {
+                    statusEl.textContent = 'Email already registered in Auth. Try logging in first, then run this tool again.';
+                } else {
+                    statusEl.textContent = 'Error: ' + error.message;
+                }
+            }
+        }
+
+        // Run on load
+        checkUser();
+    </script>
+</body>
+</html>

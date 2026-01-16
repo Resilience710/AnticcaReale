@@ -38,10 +38,13 @@ export default function AdminProducts() {
 
   async function fetchData() {
     try {
+      setLoading(true);
       const [productsData, shopsData] = await Promise.all([
         getAllProducts(false),
-        getAllShops(true),
+        getAllShops(false), // Fetch ALL shops for admin, not just active ones
       ]);
+      console.log('Fetched shops:', shopsData);
+      console.log('Fetched products:', productsData);
       setProducts(productsData);
       setShops(shopsData);
     } catch (error) {

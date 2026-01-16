@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'anticca',
       script: 'npx',
-      args: 'vite preview --host 0.0.0.0 --port 3000',
+      args: 'serve dist -l 3000 -s',
       env: {
         NODE_ENV: 'production',
         PORT: 3000

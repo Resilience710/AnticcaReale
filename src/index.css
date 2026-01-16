@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+
+/* Custom color palette */
+@theme {
+  --color-navy-50: #f0f3f7;
+  --color-navy-100: #d9e0eb;
+  --color-navy-200: #b3c1d7;
+  --color-navy-300: #8da2c3;
+  --color-navy-400: #6783af;
+  --color-navy-500: #41649b;
+  --color-navy-600: #34507c;
+  --color-navy-700: #273c5d;
+  --color-navy-800: #1a283e;
+  --color-navy-900: #0d141f;
+  --color-navy-950: #070a10;
+  
+  --color-cream-50: #fefdfb;
+  --color-cream-100: #fcf9f3;
+  --color-cream-200: #f9f3e7;
+  --color-cream-300: #f5ecdb;
+  --color-cream-400: #f2e6cf;
+  --color-cream-500: #efe0c3;
+  --color-cream-600: #d9c9a8;
+  --color-cream-700: #c3b28d;
+  --color-cream-800: #ad9b72;
+  --color-cream-900: #978457;
+  --color-cream-950: #4b4228;
+  
+  --color-gold-50: #fdfcf5;
+  --color-gold-100: #fbf8e6;
+  --color-gold-200: #f6efcc;
+  --color-gold-300: #f0e5b3;
+  --color-gold-400: #ebdc99;
+  --color-gold-500: #e5d280;
+  --color-gold-600: #c4ad55;
+  --color-gold-700: #a18a3f;
+  --color-gold-800: #7d682a;
+  --color-gold-900: #5a4614;
+  --color-gold-950: #2d230a;
+  
+  --color-forest-50: #f2f7f4;
+  --color-forest-100: #d9ebe2;
+  --color-forest-200: #b3d7c5;
+  --color-forest-300: #8dc3a8;
+  --color-forest-400: #67af8b;
+  --color-forest-500: #419b6e;
+  --color-forest-600: #347c58;
+  --color-forest-700: #275d42;
+  --color-forest-800: #1a3e2c;
+  --color-forest-900: #0d1f16;
+  --color-forest-950: #070f0b;
+  
+  --font-family-serif: 'Playfair Display', Georgia, serif;
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  color: var(--color-navy-800);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-serif);
+}
+
+/* Custom components */
+.btn-primary {
+  background-color: var(--color-gold-600);
+  color: var(--color-navy-900);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-gold-500);
+}
+
+.btn-secondary {
+  background-color: var(--color-navy-800);
+  color: var(--color-cream-100);
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-navy-700);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-cream-200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-cream-700);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cream-800);
+}
+
+/* Selection styling */
+::selection {
+  background-color: var(--color-gold-300);
+  color: var(--color-navy-900);
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}

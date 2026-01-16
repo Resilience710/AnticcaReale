@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isOwner(userId);
+      // Users can create their own document on registration
+      allow create: if isOwner(userId) && 
+                       request.resource.data.role == 'user';
+      // Users can update their own profile (but not change role)
+      allow update: if isOwner(userId) && 
+                       request.resource.data.role == resource.data.role;
+      // Admins can read and update any user
+      allow read, update: if isAdmin();
+    }
+    
+    // Shops collection
+    match /shops/{shopId} {
+      // Anyone can read active shops
+      allow read: if resource.data.isActive == true || isAdmin();
+      // Only admins can create, update, or delete shops
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Products collection
+    match /products/{productId} {
+      // Anyone can read active products
+      allow read: if resource.data.isActive == true || isAdmin();
+      // Only admins can create, update, or delete products
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Orders collection
+    match /orders/{orderId} {
+      // Users can read their own orders
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      // Users can create orders for themselves
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.status == 'Ödeme Bekleniyor';
+      // Admins can read and update any order
+      allow read, update: if isAdmin();
+      // No one can delete orders (for audit trail)
+      allow delete: if false;
+    }
+    
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

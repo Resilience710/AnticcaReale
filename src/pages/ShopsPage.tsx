@@ -7,12 +7,12 @@ export default function ShopsPage() {
   const { shops, loading } = useShops();
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-linen-300">
       {/* Header */}
-      <div className="bg-navy-900 text-cream-100 py-12">
+      <div className="bg-olive-800 text-linen-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold">{TR.shops.title}</h1>
-          <p className="mt-2 text-cream-300">İstanbul'un en seçkin antika dükkanları</p>
+          <p className="mt-2 text-linen-300">İstanbul'un en seçkin antika dükkanları</p>
         </div>
       </div>
 
@@ -20,8 +20,8 @@ export default function ShopsPage() {
         {loading ? (
           <Loading />
         ) : shops.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-cream-200">
-            <p className="text-navy-600 text-lg">{TR.shops.noShops}</p>
+          <div className="text-center py-16 bg-linen-200 rounded-xl border border-mist-300">
+            <p className="text-espresso-700 text-lg">{TR.shops.noShops}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

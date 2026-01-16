@@ -19,12 +19,12 @@ export default function ProductsPage() {
   const shopMap = new Map(shops.map(s => [s.id, s.name]));
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-linen-300">
       {/* Header */}
-      <div className="bg-navy-900 text-cream-100 py-12">
+      <div className="bg-olive-800 text-linen-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold">{TR.products.title}</h1>
-          <p className="mt-2 text-cream-300">Tüm antika ürünlerimizi keşfedin</p>
+          <p className="mt-2 text-linen-300">Tüm antika ürünlerimizi keşfedin</p>
         </div>
       </div>
 
@@ -57,7 +57,7 @@ export default function ProductsPage() {
 
             {/* Results count */}
             <div className="mb-6">
-              <p className="text-navy-600">
+              <p className="text-espresso-700">
                 {loading ? TR.common.loading : `${products.length} ürün bulundu`}
               </p>
             </div>
@@ -66,9 +66,9 @@ export default function ProductsPage() {
             {loading ? (
               <Loading />
             ) : products.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-xl border border-cream-200">
-                <p className="text-navy-600 text-lg">{TR.products.noProducts}</p>
-                <p className="text-navy-400 mt-2">Farklı filtreler deneyebilirsiniz.</p>
+              <div className="text-center py-16 bg-linen-200 rounded-xl border border-mist-300">
+                <p className="text-espresso-800 text-lg">{TR.products.noProducts}</p>
+                <p className="text-espresso-600 mt-2">Farklı filtreler deneyebilirsiniz.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">

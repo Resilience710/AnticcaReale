@@ -64,13 +64,13 @@ export default function ProductFilters({
     <>
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-navy-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-espresso-400" />
         <input
           type="text"
           placeholder={TR.filters.search}
           value={filters.search || ''}
           onChange={(e) => updateFilter('search', e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-navy-200 focus:border-gold-500 focus:ring-2 focus:ring-gold-200 bg-white"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-mist-300 focus:border-gold-500 focus:ring-2 focus:ring-gold-200 bg-linen-100"
         />
       </div>
 
@@ -100,7 +100,7 @@ export default function ProductFilters({
 
       {/* Price Range */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-navy-700">
+        <label className="block text-sm font-medium text-espresso-800">
           {TR.filters.priceRange}
         </label>
         <div className="flex gap-2">
@@ -142,13 +142,13 @@ export default function ProductFilters({
     return (
       <div className="fixed inset-0 z-50 lg:hidden">
         <div className="absolute inset-0 bg-black/50" onClick={onCloseMobile} />
-        <div className="absolute right-0 top-0 bottom-0 w-80 bg-white shadow-xl overflow-y-auto">
-          <div className="sticky top-0 bg-white border-b border-cream-200 p-4 flex items-center justify-between">
-            <h2 className="font-semibold text-navy-800 flex items-center">
+        <div className="absolute right-0 top-0 bottom-0 w-80 bg-linen-300 shadow-xl overflow-y-auto">
+          <div className="sticky top-0 bg-linen-200 border-b border-mist-300 p-4 flex items-center justify-between">
+            <h2 className="font-semibold text-espresso-900 flex items-center">
               <SlidersHorizontal className="h-5 w-5 mr-2" />
               {TR.filters.title}
             </h2>
-            <button onClick={onCloseMobile} className="text-navy-500 hover:text-navy-700">
+            <button onClick={onCloseMobile} className="text-espresso-600 hover:text-espresso-900">
               <X className="h-6 w-6" />
             </button>
           </div>
@@ -162,8 +162,8 @@ export default function ProductFilters({
 
   // Desktop sidebar
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-cream-200 p-6 space-y-6">
-      <h2 className="font-semibold text-navy-800 flex items-center">
+    <div className="bg-linen-200 rounded-xl shadow-sm border border-mist-300 p-6 space-y-6">
+      <h2 className="font-semibold text-espresso-900 flex items-center">
         <SlidersHorizontal className="h-5 w-5 mr-2" />
         {TR.filters.title}
       </h2>

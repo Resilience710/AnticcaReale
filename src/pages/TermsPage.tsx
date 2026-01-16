@@ -2,23 +2,23 @@ import { TR } from '../constants/tr';
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-linen-300">
       {/* Header */}
-      <div className="bg-navy-900 text-cream-100 py-16">
+      <div className="bg-olive-800 text-linen-100 py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="font-serif text-4xl md:text-5xl font-bold mb-4">Kullanım Şartları</h1>
-          <p className="text-xl text-cream-300">
+          <p className="text-xl text-linen-300">
             Son güncelleme: Ocak 2024
           </p>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-sm border border-cream-200 p-8 md:p-12">
-          <div className="prose prose-lg max-w-none text-navy-700">
+        <div className="bg-linen-200 rounded-xl shadow-sm border border-mist-300 p-8 md:p-12">
+          <div className="prose prose-lg max-w-none text-espresso-800">
             
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">1. Genel Hükümler</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">1. Genel Hükümler</h2>
               <p>
                 Bu web sitesini ("Site") kullanarak, aşağıdaki kullanım şartlarını kabul etmiş sayılırsınız. 
                 {TR.siteName} ("Şirket", "biz"), bu şartları önceden haber vermeksizin değiştirme hakkını saklı tutar.
@@ -29,7 +29,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">2. Hesap Oluşturma ve Güvenlik</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">2. Hesap Oluşturma ve Güvenlik</h2>
               <p>
                 Site üzerinden alışveriş yapabilmek için hesap oluşturmanız gerekmektedir. Hesap bilgilerinizin 
                 doğruluğundan ve güncelliğinden siz sorumlusunuz.
@@ -43,7 +43,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">3. Ürünler ve Fiyatlandırma</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">3. Ürünler ve Fiyatlandırma</h2>
               <p>
                 Site üzerinde sergilenen tüm ürünler, platformumuzda kayıtlı antika dükkanları tarafından 
                 satışa sunulmaktadır.
@@ -57,7 +57,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">4. Sipariş ve Ödeme</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">4. Sipariş ve Ödeme</h2>
               <p>
                 Sipariş vermek, satış sözleşmesi için bağlayıcı bir teklif anlamına gelir.
               </p>
@@ -70,7 +70,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">5. Kargo ve Teslimat</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">5. Kargo ve Teslimat</h2>
               <p>
                 Ürünler, özenle paketlenerek anlaşmalı kargo firmaları aracılığıyla gönderilir.
               </p>
@@ -84,7 +84,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">6. İade ve Değişim</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">6. İade ve Değişim</h2>
               <p>
                 Tüketicinin Korunması Hakkında Kanun kapsamında cayma hakkınız bulunmaktadır.
               </p>
@@ -98,7 +98,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">7. Fikri Mülkiyet Hakları</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">7. Fikri Mülkiyet Hakları</h2>
               <p>
                 Site üzerindeki tüm içerik (metin, grafik, logo, görsel, ses, video vb.) {TR.siteName}'ya 
                 veya lisans verenlerine aittir ve telif hakları ile korunmaktadır.
@@ -110,7 +110,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">8. Sorumluluk Sınırlaması</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">8. Sorumluluk Sınırlaması</h2>
               <p>
                 {TR.siteName}, aşağıdaki durumlardan kaynaklanan zararlardan sorumlu tutulamaz:
               </p>
@@ -123,7 +123,7 @@ export default function TermsPage() {
             </section>
 
             <section className="mb-8">
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">9. Uyuşmazlık Çözümü</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">9. Uyuşmazlık Çözümü</h2>
               <p>
                 Bu şartlardan doğan uyuşmazlıklarda İstanbul Mahkemeleri ve İcra Daireleri yetkilidir. 
                 Türkiye Cumhuriyeti kanunları uygulanır.
@@ -131,7 +131,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="font-serif text-2xl font-bold text-navy-800 mb-4">10. İletişim</h2>
+              <h2 className="font-serif text-2xl font-bold text-espresso-900 mb-4">10. İletişim</h2>
               <p>
                 Kullanım şartları hakkında sorularınız için bizimle iletişime geçebilirsiniz:
               </p>

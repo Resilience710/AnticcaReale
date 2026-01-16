@@ -31,10 +31,10 @@ export default function ProductCard({ product, shopName }: ProductCardProps) {
   return (
     <Link
       to={`/products/${product.id}`}
-      className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-cream-200"
+      className="group bg-linen-300 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-mist-300"
     >
       {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-cream-100">
+      <div className="relative aspect-square overflow-hidden bg-linen-200">
         {product.images && product.images.length > 0 ? (
           <img
             src={product.images[0]}
@@ -42,7 +42,7 @@ export default function ProductCard({ product, shopName }: ProductCardProps) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-cream-400">
+          <div className="w-full h-full flex items-center justify-center text-mist-400">
             <span className="text-6xl">🏺</span>
           </div>
         )}
@@ -55,29 +55,29 @@ export default function ProductCard({ product, shopName }: ProductCardProps) {
         )}
         
         {/* Category badge */}
-        <div className="absolute top-2 left-2 bg-navy-800/90 text-cream-100 px-2 py-1 rounded text-xs font-medium">
+        <div className="absolute top-2 left-2 bg-olive-800/90 text-linen-100 px-2 py-1 rounded text-xs font-medium">
           {product.category}
         </div>
       </div>
 
       {/* Content */}
       <div className="p-4">
-        <h3 className="font-serif text-lg font-semibold text-navy-800 line-clamp-1 group-hover:text-gold-700 transition-colors">
+        <h3 className="font-serif text-lg font-semibold text-espresso-900 line-clamp-1 group-hover:text-gold-800 transition-colors">
           {product.name}
         </h3>
         
         {shopName && (
-          <p className="text-sm text-navy-500 mt-1">{shopName}</p>
+          <p className="text-sm text-espresso-600 mt-1">{shopName}</p>
         )}
         
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-navy-400 bg-cream-100 px-2 py-1 rounded">
+          <span className="text-xs text-espresso-600 bg-linen-200 px-2 py-1 rounded">
             {product.era}
           </span>
         </div>
 
         <div className="flex items-center justify-between mt-4">
-          <span className="text-xl font-bold text-gold-700">
+          <span className="text-xl font-bold text-gold-800">
             {formatPrice(product.price)}
           </span>
           

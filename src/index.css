@@ -1,55 +1,98 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
 
-/* Custom color palette */
+/* İtalyan / Fransız Antikacı Renk Paleti */
 @theme {
-  --color-navy-50: #f0f3f7;
-  --color-navy-100: #d9e0eb;
-  --color-navy-200: #b3c1d7;
-  --color-navy-300: #8da2c3;
-  --color-navy-400: #6783af;
-  --color-navy-500: #41649b;
-  --color-navy-600: #34507c;
-  --color-navy-700: #273c5d;
-  --color-navy-800: #1a283e;
-  --color-navy-900: #0d141f;
-  --color-navy-950: #070a10;
+  /* Olive - Ana Arka Plan (Koyu Zeytin Yeşili) */
+  --color-olive-50: #f4f6f4;
+  --color-olive-100: #e3e8e4;
+  --color-olive-200: #c7d1c9;
+  --color-olive-300: #a3b2a7;
+  --color-olive-400: #7a8f7f;
+  --color-olive-500: #5a7260;
+  --color-olive-600: #475a4c;
+  --color-olive-700: #3a4a3f;
+  --color-olive-800: #2F3E34;
+  --color-olive-900: #252f28;
+  --color-olive-950: #141a16;
   
-  --color-cream-50: #fefdfb;
-  --color-cream-100: #fcf9f3;
-  --color-cream-200: #f9f3e7;
-  --color-cream-300: #f5ecdb;
-  --color-cream-400: #f2e6cf;
-  --color-cream-500: #efe0c3;
-  --color-cream-600: #d9c9a8;
-  --color-cream-700: #c3b28d;
-  --color-cream-800: #ad9b72;
-  --color-cream-900: #978457;
-  --color-cream-950: #4b4228;
+  /* Linen - Kart Arka Plan (Keten Beji) */
+  --color-linen-50: #fdfcfa;
+  --color-linen-100: #faf8f4;
+  --color-linen-200: #f5f2eb;
+  --color-linen-300: #EFE9DD;
+  --color-linen-400: #e5dccb;
+  --color-linen-500: #d9cdb8;
+  --color-linen-600: #c4b89f;
+  --color-linen-700: #a99d84;
+  --color-linen-800: #8a8069;
+  --color-linen-900: #6e6654;
+  --color-linen-950: #3a352c;
   
-  --color-gold-50: #fdfcf5;
-  --color-gold-100: #fbf8e6;
-  --color-gold-200: #f6efcc;
-  --color-gold-300: #f0e5b3;
-  --color-gold-400: #ebdc99;
-  --color-gold-500: #e5d280;
-  --color-gold-600: #c4ad55;
-  --color-gold-700: #a18a3f;
-  --color-gold-800: #7d682a;
-  --color-gold-900: #5a4614;
-  --color-gold-950: #2d230a;
+  /* Espresso - Ana Metin (Koyu Espresso) */
+  --color-espresso-50: #f6f5f4;
+  --color-espresso-100: #e8e6e4;
+  --color-espresso-200: #d4d0cc;
+  --color-espresso-300: #b8b2ab;
+  --color-espresso-400: #958c84;
+  --color-espresso-500: #7a6f66;
+  --color-espresso-600: #625750;
+  --color-espresso-700: #504643;
+  --color-espresso-800: #423a37;
+  --color-espresso-900: #2B2521;
+  --color-espresso-950: #1a1714;
   
-  --color-forest-50: #f2f7f4;
-  --color-forest-100: #d9ebe2;
-  --color-forest-200: #b3d7c5;
-  --color-forest-300: #8dc3a8;
-  --color-forest-400: #67af8b;
-  --color-forest-500: #419b6e;
-  --color-forest-600: #347c58;
-  --color-forest-700: #275d42;
-  --color-forest-800: #1a3e2c;
-  --color-forest-900: #0d1f16;
-  --color-forest-950: #070f0b;
+  /* Gold - Vurgu / CTA (Mat Altın) ve Hover (Antik Bronz) */
+  --color-gold-50: #fbf9f3;
+  --color-gold-100: #f6f1e2;
+  --color-gold-200: #ede2c4;
+  --color-gold-300: #e0ce9e;
+  --color-gold-400: #d4ba78;
+  --color-gold-500: #BFA76A;
+  --color-gold-600: #a89155;
+  --color-gold-700: #8c7645;
+  --color-gold-800: #7C6A3D;
+  --color-gold-900: #5a4d2f;
+  --color-gold-950: #322a19;
+  
+  /* Mist - Çizgiler (Sis Gri) */
+  --color-mist-50: #fafaf9;
+  --color-mist-100: #f4f3f2;
+  --color-mist-200: #eae9e6;
+  --color-mist-300: #C4C1BA;
+  --color-mist-400: #a8a49b;
+  --color-mist-500: #8f8a7f;
+  --color-mist-600: #757067;
+  --color-mist-700: #5e5a53;
+  --color-mist-800: #4d4a45;
+  --color-mist-900: #413f3b;
+  --color-mist-950: #232220;
+  
+  /* Legacy colors - Navy (maps to Olive) */
+  --color-navy-50: #f4f6f4;
+  --color-navy-100: #e3e8e4;
+  --color-navy-200: #c7d1c9;
+  --color-navy-300: #a3b2a7;
+  --color-navy-400: #7a8f7f;
+  --color-navy-500: #5a7260;
+  --color-navy-600: #475a4c;
+  --color-navy-700: #3a4a3f;
+  --color-navy-800: #2F3E34;
+  --color-navy-900: #252f28;
+  --color-navy-950: #141a16;
+  
+  /* Legacy colors - Cream (maps to Linen) */
+  --color-cream-50: #fdfcfa;
+  --color-cream-100: #faf8f4;
+  --color-cream-200: #f5f2eb;
+  --color-cream-300: #EFE9DD;
+  --color-cream-400: #e5dccb;
+  --color-cream-500: #d9cdb8;
+  --color-cream-600: #c4b89f;
+  --color-cream-700: #a99d84;
+  --color-cream-800: #8a8069;
+  --color-cream-900: #6e6654;
+  --color-cream-950: #3a352c;
   
   --font-family-serif: 'Playfair Display', Georgia, serif;
   --font-family-sans: 'Inter', system-ui, sans-serif;
@@ -62,40 +105,43 @@ html {
 
 body {
   font-family: var(--font-family-sans);
-  color: var(--color-navy-800);
+  color: var(--color-espresso-900);
+  background-color: var(--color-linen-300);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-family-serif);
+  color: var(--color-espresso-900);
 }
 
 /* Custom components */
 .btn-primary {
-  background-color: var(--color-gold-600);
-  color: var(--color-navy-900);
+  background-color: var(--color-gold-500);
+  color: var(--color-espresso-950);
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-primary:hover {
-  background-color: var(--color-gold-500);
+  background-color: var(--color-gold-800);
+  color: var(--color-linen-100);
 }
 
 .btn-secondary {
-  background-color: var(--color-navy-800);
-  color: var(--color-cream-100);
+  background-color: var(--color-olive-800);
+  color: var(--color-linen-100);
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 500;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-secondary:hover {
-  background-color: var(--color-navy-700);
+  background-color: var(--color-olive-700);
 }
 
 /* Scrollbar styling */
@@ -105,22 +151,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-cream-200);
+  background: var(--color-linen-200);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-cream-700);
+  background: var(--color-mist-300);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-cream-800);
+  background: var(--color-mist-500);
 }
 
 /* Selection styling */
 ::selection {
   background-color: var(--color-gold-300);
-  color: var(--color-navy-900);
+  color: var(--color-espresso-900);
 }
 
 /* Line clamp utilities */

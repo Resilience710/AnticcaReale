@@ -71,7 +71,7 @@ export default function ProductsPage() {
                 <p className="text-espresso-600 mt-2">Farklı filtreler deneyebilirsiniz.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                 {products.map((product) => (
                   <ProductCard
                     key={product.id}

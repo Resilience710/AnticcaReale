@@ -117,6 +117,25 @@ service cloud.firestore {
     }
     
     // ============================================
+    // BLOGPOSTS COLLECTION (Blog Yazıları)
+    // ============================================
+    match /blogposts/{postId} {
+      // Herkes yayınlanmış blog yazılarını okuyabilir
+      // Adminler tüm yazıları (taslak/yayın) okuyabilir
+      allow read: if resource.data.status == 'published' || isAdmin();
+      
+      // Sadece adminler blog yazısı oluşturabilir
+      allow create: if isAdmin() &&
+                       request.resource.data.keys().hasAll(['title', 'type', 'thumbnail', 'status']);
+      
+      // Sadece adminler blog yazısı güncelleyebilir
+      allow update: if isAdmin();
+      
+      // Sadece adminler blog yazısı silebilir
+      allow delete: if isAdmin();
+    }
+    
+    // ============================================
     // DEFAULT DENY - Tanımlanmamış tüm erişimler engellenir
     // ============================================
     match /{document=**} {

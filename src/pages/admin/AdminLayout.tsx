@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Store, Package, ShoppingCart, LogOut } from 'lucide-react';
+import { LayoutDashboard, Store, Package, ShoppingCart, LogOut, BookOpen } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { TR } from '../../constants/tr';
 import Loading from '../../components/ui/Loading';
@@ -9,6 +9,7 @@ const navItems = [
   { path: '/admin/shops', label: TR.admin.shops, icon: Store },
   { path: '/admin/products', label: TR.admin.products, icon: Package },
   { path: '/admin/orders', label: TR.admin.orders, icon: ShoppingCart },
+  { path: '/admin/blog', label: 'Blog Yönetimi', icon: BookOpen },
 ];
 
 export default function AdminLayout() {

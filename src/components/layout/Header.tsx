@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ShoppingCart, User, LogOut, Settings, Package } from 'lucide-react';
+import { Menu, X, ShoppingCart, User, LogOut, Settings, Package, BookOpen, Info } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { TR } from '../../constants/tr';
@@ -51,6 +51,18 @@ export default function Header() {
               className="text-linen-200 hover:text-gold-500 transition-colors"
             >
               {TR.nav.shops}
+            </Link>
+            <Link
+              to="/blog"
+              className="text-linen-200 hover:text-gold-500 transition-colors"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/about"
+              className="text-linen-200 hover:text-gold-500 transition-colors"
+            >
+              Hakkımızda
             </Link>
           </div>
 
@@ -168,6 +180,22 @@ export default function Header() {
                 className="text-linen-200 hover:text-gold-500 transition-colors"
               >
                 {TR.nav.shops}
+              </Link>
+              <Link
+                to="/blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-linen-200 hover:text-gold-500 transition-colors flex items-center gap-2"
+              >
+                <BookOpen className="h-4 w-4" />
+                Blog
+              </Link>
+              <Link
+                to="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-linen-200 hover:text-gold-500 transition-colors flex items-center gap-2"
+              >
+                <Info className="h-4 w-4" />
+                Hakkımızda
               </Link>
               {!currentUser && (
                 <>

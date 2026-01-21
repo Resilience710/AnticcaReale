@@ -18,6 +18,8 @@ import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import BlogPage from './pages/BlogPage';
+import BlogDetailPage from './pages/BlogDetailPage';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -25,6 +27,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminShops from './pages/admin/AdminShops';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminOrders from './pages/admin/AdminOrders';
+import AdminBlog from './pages/admin/AdminBlog';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +58,8 @@ function App() {
                 <Route path="contact" element={<ContactPage />} />
                 <Route path="terms" element={<TermsPage />} />
                 <Route path="privacy" element={<PrivacyPage />} />
+                <Route path="blog" element={<BlogPage />} />
+                <Route path="blog/:id" element={<BlogDetailPage />} />
               </Route>
 
               {/* Auth Routes (no layout) */}
@@ -67,6 +72,7 @@ function App() {
                 <Route path="shops" element={<AdminShops />} />
                 <Route path="products" element={<AdminProducts />} />
                 <Route path="orders" element={<AdminOrders />} />
+                <Route path="blog" element={<AdminBlog />} />
               </Route>
 
               {/* 404 */}

@@ -154,3 +154,76 @@ export interface FilterState {
   search?: string;
   sortBy: 'newest' | 'price-asc' | 'price-desc';
 }
+
+// ============================================
+// BLOG MODULE TYPES
+// ============================================
+
+export type BlogPostType = 'video' | 'richtext';
+
+export type BlogCategory = 
+  | 'Antika Hikayeleri'
+  | 'Koleksiyonerlik'
+  | 'Restorasyon'
+  | 'Dönem Rehberi'
+  | 'Dükkan Hikayeleri'
+  | 'Etkinlikler'
+  | 'Diğer';
+
+export const BLOG_CATEGORIES: BlogCategory[] = [
+  'Antika Hikayeleri',
+  'Koleksiyonerlik',
+  'Restorasyon',
+  'Dönem Rehberi',
+  'Dükkan Hikayeleri',
+  'Etkinlikler',
+  'Diğer',
+];
+
+// Base blog post interface
+export interface BlogPostBase {
+  id: string;
+  type: BlogPostType;
+  title: string;
+  slug: string;
+  excerpt: string; // Short description for cards
+  category: BlogCategory;
+  thumbnailUrl: string;
+  authorId: string;
+  authorName: string;
+  tags: string[];
+  isPublished: boolean;
+  isFeatured: boolean;
+  viewCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt?: Date;
+}
+
+// Video Blog Post - Type A
+export interface VideoBlogPost extends BlogPostBase {
+  type: 'video';
+  videoUrl: string; // YouTube/Vimeo URL or embed code
+  videoPlatform: 'youtube' | 'vimeo' | 'other';
+  videoDescription: string; // Short textual description
+  videoDuration?: string; // e.g., "12:34"
+}
+
+// Rich Text Blog Post - Type B
+export interface RichTextBlogPost extends BlogPostBase {
+  type: 'richtext';
+  content: string; // HTML content from WYSIWYG editor
+  galleryImages: string[]; // Multi-image gallery
+}
+
+// Union type for all blog posts
+export type BlogPost = VideoBlogPost | RichTextBlogPost;
+
+// Type guards
+export function isVideoBlogPost(post: BlogPost): post is VideoBlogPost {
+  return post.type === 'video';
+}
+
+export function isRichTextBlogPost(post: BlogPost): post is RichTextBlogPost {
+  return post.type === 'richtext';
+}

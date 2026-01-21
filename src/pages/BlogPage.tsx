@@ -132,10 +132,10 @@ export default function BlogPage() {
   return (
     <div className="min-h-screen bg-linen-300">
       {/* Header */}
-      <div className="bg-olive-800 text-linen-100 py-12">
+      <div className="bg-olive-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="font-serif text-3xl md:text-4xl font-bold">Blog</h1>
-          <p className="mt-2 text-linen-300">
+          <h1 className="font-serif text-3xl md:text-4xl font-bold text-white">Blog</h1>
+          <p className="mt-2 text-linen-100/90">
             Antika dünyasından hikayeler, koleksiyonerlik rehberleri ve daha fazlası
           </p>
         </div>

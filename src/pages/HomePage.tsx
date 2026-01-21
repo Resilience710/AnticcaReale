@@ -18,30 +18,36 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - Optimized for mobile */}
       <section className="relative bg-olive-800 text-linen-100 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920')] bg-cover bg-center opacity-20" />
+        {/* Background with smaller mobile image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-20"
+          style={{
+            backgroundImage: `url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=75')`
+          }}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-olive-800 via-olive-800/95 to-olive-800/80" />
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
           <div className="max-w-2xl">
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
               <span className="text-gold-500">{TR.siteName}</span>
               <br />
-              <span className="text-linen-100">{TR.tagline}</span>
+              <span className="text-white">{TR.tagline}</span>
             </h1>
-            <p className="mt-6 text-lg md:text-xl text-linen-300 leading-relaxed">
+            <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl text-linen-100/90 leading-relaxed">
               {TR.heroSubtitle}
             </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link to="/products">
-                <Button size="lg" variant="primary">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Link to="/products" className="w-full sm:w-auto">
+                <Button size="lg" variant="primary" className="w-full sm:w-auto justify-center min-h-[48px]">
                   {TR.nav.products}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <Link to="/shops">
-                <Button size="lg" variant="outline" className="border-linen-300 text-linen-100 hover:bg-linen-100 hover:text-olive-800">
+              <Link to="/shops" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto justify-center border-linen-100/50 text-linen-100 hover:bg-linen-100 hover:text-olive-800 min-h-[48px]">
                   {TR.nav.shops}
                 </Button>
               </Link>

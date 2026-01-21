@@ -11,14 +11,16 @@ export default function ShopCard({ shop }: ShopCardProps) {
   return (
     <Link
       to={`/shops/${shop.id}`}
-      className="group bg-linen-300 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-mist-300"
+      className="group bg-linen-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-mist-300 flex flex-col min-h-[280px]"
     >
-      {/* Logo / Header */}
-      <div className="relative h-40 bg-gradient-to-br from-olive-700 to-olive-800 overflow-hidden">
+      {/* Logo / Header - Fixed aspect ratio */}
+      <div className="relative aspect-[16/10] bg-gradient-to-br from-olive-700 to-olive-800 overflow-hidden">
         {shop.logoUrl ? (
           <img
             src={shop.logoUrl}
             alt={shop.name}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-500"
           />
         ) : (
@@ -27,16 +29,16 @@ export default function ShopCard({ shop }: ShopCardProps) {
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-olive-800/80 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4">
-          <h3 className="font-serif text-xl font-bold text-linen-100 line-clamp-1">
+        <div className="absolute bottom-3 left-3 right-3">
+          <h3 className="font-serif text-lg sm:text-xl font-bold text-white line-clamp-1 drop-shadow-lg">
             {shop.name}
           </h3>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <p className="text-espresso-700 text-sm line-clamp-2 mb-4">
+      <div className="p-4 flex-1 flex flex-col">
+        <p className="text-espresso-700 text-sm line-clamp-2 mb-3">
           {shop.description}
         </p>
 
@@ -55,8 +57,8 @@ export default function ShopCard({ shop }: ShopCardProps) {
           )}
         </div>
 
-        <div className="mt-4 pt-4 border-t border-mist-300">
-          <span className="inline-flex items-center text-sm font-medium text-gold-800 group-hover:text-gold-600 transition-colors">
+        <div className="mt-auto pt-4 border-t border-mist-300">
+          <span className="inline-flex items-center text-sm font-medium text-gold-700 group-hover:text-gold-600 transition-colors min-h-[44px] py-2">
             {TR.shops.viewProducts}
             <ArrowRight className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" />
           </span>

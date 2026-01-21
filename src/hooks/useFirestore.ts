@@ -419,8 +419,8 @@ export function useBlogPosts(options?: {
   return { posts, loading, error };
 }
 
-// Hook for fetching single blog post by slug or ID
-export function useBlogPost(identifier: string | undefined, bySlug: boolean = false) {
+// Hook for fetching single blog post by slug or ID (auto-detect)
+export function useBlogPost(identifier: string | undefined) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -433,27 +433,24 @@ export function useBlogPost(identifier: string | undefined, bySlug: boolean = fa
 
     async function fetchPost() {
       try {
-        if (bySlug) {
-          // Fetch by slug
-          const q = query(collection(db, 'blogPosts'), where('slug', '==', identifier));
-          const snapshot = await getDocs(q);
-          
-          if (!snapshot.empty) {
-            const docData = snapshot.docs[0];
-            setPost({ id: docData.id, ...docData.data() } as BlogPost);
-          } else {
-            setPost(null);
-          }
+        // First try to fetch by ID
+        const docRef = doc(db, 'blogPosts', identifier as string);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          setPost({ id: docSnap.id, ...docSnap.data() } as BlogPost);
+          return;
+        }
+        
+        // If not found by ID, try by slug
+        const q = query(collection(db, 'blogPosts'), where('slug', '==', identifier));
+        const snapshot = await getDocs(q);
+        
+        if (!snapshot.empty) {
+          const docData = snapshot.docs[0];
+          setPost({ id: docData.id, ...docData.data() } as BlogPost);
         } else {
-          // Fetch by ID
-          const docRef = doc(db, 'blogPosts', identifier as string);
-          const docSnap = await getDoc(docRef);
-          
-          if (docSnap.exists()) {
-            setPost({ id: docSnap.id, ...docSnap.data() } as BlogPost);
-          } else {
-            setPost(null);
-          }
+          setPost(null);
         }
       } catch (err) {
         setError(err as Error);
@@ -463,7 +460,7 @@ export function useBlogPost(identifier: string | undefined, bySlug: boolean = fa
     }
 
     fetchPost();
-  }, [identifier, bySlug]);
+  }, [identifier]);
 
   return { post, loading, error };
 }

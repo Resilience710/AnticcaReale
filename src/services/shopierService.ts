@@ -1,6 +1,6 @@
 /**
  * Shopier Payment Service
- * Handles payment creation and redirection to Shopier payment page
+ * Firebase Cloud Functions ile entegre ödeme servisi
  */
 
 // Types
@@ -31,42 +31,64 @@ export interface CreatePaymentRequest {
 }
 
 export interface PaymentFormData {
-  paymentUrl: string;
+  success: boolean;
+  shopierUrl: string;
   formData: Record<string, string | number>;
+  orderId: string;
 }
 
 export interface PaymentError {
   error: string;
-  code: string;
+  code?: string;
   message?: string;
 }
 
-// API Base URL
-const getApiBaseUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    const origin = window.location.origin;
-    if (origin.includes('pages.dev') || origin.includes('anticca')) {
-      return origin;
-    }
-    return '';
+// Firebase Functions Base URL
+// Production: europe-west1 bölgesinde deploy edilecek
+const getFirebaseFunctionsUrl = (): string => {
+  // Development modunda local emulator kullan
+  if (import.meta.env.DEV && import.meta.env.VITE_USE_EMULATOR === 'true') {
+    return 'http://localhost:5001/anticcareale/europe-west1';
   }
-  return '';
+  
+  // Production Firebase Functions URL
+  return 'https://europe-west1-anticcareale.cloudfunctions.net';
 };
 
 /**
- * Create a Shopier payment session
+ * Create a Shopier payment session via Firebase Functions
  */
 export async function createShopierPayment(
   request: CreatePaymentRequest
 ): Promise<PaymentFormData> {
-  const apiUrl = `${getApiBaseUrl()}/api/payments/shopier/create`;
+  const functionsUrl = getFirebaseFunctionsUrl();
+  const apiUrl = `${functionsUrl}/createShopierPayment`;
   
-  console.log('Creating Shopier payment:', { orderId: request.orderId, amount: request.orderAmount });
+  console.log('Creating Shopier payment via Firebase Functions:', { 
+    orderId: request.orderId, 
+    amount: request.orderAmount,
+    apiUrl
+  });
   
+  // Firebase Functions için body formatı
+  const body = {
+    orderId: request.orderId,
+    amount: request.orderAmount,
+    productName: request.productName,
+    buyer: {
+      id: request.buyer.id,
+      name: `${request.buyer.name} ${request.buyer.surname}`,
+      email: request.buyer.email,
+      phone: request.buyer.phone,
+      address: request.address.address,
+      city: request.address.city
+    }
+  };
+
   const response = await fetch(apiUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(request),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -93,7 +115,7 @@ export function redirectToShopierPayment(paymentData: PaymentFormData): void {
   
   const form = document.createElement('form');
   form.method = 'POST';
-  form.action = paymentData.paymentUrl;
+  form.action = paymentData.shopierUrl;
   form.style.display = 'none';
   
   Object.entries(paymentData.formData).forEach(([key, value]) => {
@@ -161,10 +183,21 @@ export function formatPhoneNumber(phone: string): string {
  */
 export async function checkPaymentApiHealth(): Promise<boolean> {
   try {
-    const apiUrl = `${getApiBaseUrl()}/api/payments/shopier/webhook`;
-    const response = await fetch(apiUrl, { method: 'GET' });
-    return response.ok;
+    const functionsUrl = getFirebaseFunctionsUrl();
+    // Firebase Functions health check - basit bir OPTIONS request
+    const response = await fetch(`${functionsUrl}/createShopierPayment`, { 
+      method: 'OPTIONS' 
+    });
+    return response.ok || response.status === 204;
   } catch {
     return false;
   }
+}
+
+/**
+ * Get Firebase Functions callback URL for Shopier
+ */
+export function getShopierCallbackUrl(): string {
+  const functionsUrl = getFirebaseFunctionsUrl();
+  return `${functionsUrl}/shopierCallback`;
 }

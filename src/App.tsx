@@ -20,6 +20,8 @@ import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import BlogPage from './pages/BlogPage';
 import BlogDetailPage from './pages/BlogDetailPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import CheckoutFailPage from './pages/CheckoutFailPage';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -60,6 +62,8 @@ function App() {
                 <Route path="privacy" element={<PrivacyPage />} />
                 <Route path="blog" element={<BlogPage />} />
                 <Route path="blog/:id" element={<BlogDetailPage />} />
+                <Route path="checkout/success" element={<CheckoutSuccessPage />} />
+                <Route path="checkout/fail" element={<CheckoutFailPage />} />
               </Route>
 
               {/* Auth Routes (no layout) */}

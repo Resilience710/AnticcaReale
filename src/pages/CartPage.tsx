@@ -1,11 +1,17 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Minus, Plus, ShoppingBag, CreditCard } from 'lucide-react';
+import { Trash2, Minus, Plus, ShoppingBag, CreditCard, Shield, Lock } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { createOrder } from '../hooks/useFirestore';
 import { TR } from '../constants/tr';
 import Button from '../components/ui/Button';
+import { 
+  initiateShopierPayment, 
+  parseUserName, 
+  formatPhoneNumber,
+  type CreatePaymentRequest 
+} from '../services/shopierService';
 
 export default function CartPage() {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
@@ -13,6 +19,7 @@ export default function CartPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [paymentStep, setPaymentStep] = useState<'idle' | 'creating_order' | 'redirecting'>('idle');
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('tr-TR', {
@@ -21,23 +28,28 @@ export default function CartPage() {
     }).format(price);
   };
 
-  const handleCheckout = async () => {
+  const handleShopierCheckout = async () => {
     if (!currentUser || !userData) {
       navigate('/login?redirect=/cart');
       return;
     }
 
+    if (!userData.name || !userData.email) {
+      setError('Lütfen profil bilgilerinizi tamamlayın.');
+      return;
+    }
+
     setLoading(true);
     setError('');
+    setPaymentStep('creating_order');
 
     try {
-      // Create order with "Ödeme Bekleniyor" status
       const orderItems = items.map((item) => ({
         productId: item.productId,
         productName: item.product.name,
         productImage: item.product.images?.[0] || '',
         shopId: item.product.shopId,
-        shopName: '', // Will be filled by admin or in order display
+        shopName: '',
         quantity: item.quantity,
         price: item.product.price,
       }));
@@ -53,17 +65,41 @@ export default function CartPage() {
         status: 'Ödeme Bekleniyor',
       });
 
-      // In a real implementation, redirect to Shopier payment page
-      // For now, we'll simulate a successful payment
-      // const shopierUrl = generateShopierPaymentUrl(orderId, totalPrice);
-      // window.location.href = shopierUrl;
+      console.log('Order created:', orderId);
+      setPaymentStep('redirecting');
 
-      // Clear cart and redirect to orders
+      const { name, surname } = parseUserName(userData.name);
+
+      const paymentRequest: CreatePaymentRequest = {
+        orderId,
+        orderAmount: totalPrice,
+        currency: 0,
+        productName: items.length === 1 
+          ? items[0].product.name 
+          : `Anticca Sipariş (${items.length} ürün)`,
+        buyer: {
+          id: currentUser.uid,
+          name,
+          surname,
+          email: userData.email,
+          phone: formatPhoneNumber(userData.phone || '5551234567'),
+          accountAge: 0,
+        },
+        address: {
+          address: userData.address || 'Adres belirtilmemiş',
+          city: 'İstanbul',
+          country: 'Turkey',
+          postcode: '34000',
+        },
+      };
+
       clearCart();
-      navigate(`/orders?success=true&orderId=${orderId}`);
+      await initiateShopierPayment(paymentRequest);
+
     } catch (err) {
       console.error('Checkout error:', err);
-      setError(TR.common.error);
+      setError(err instanceof Error ? err.message : TR.common.error);
+      setPaymentStep('idle');
     } finally {
       setLoading(false);
     }
@@ -71,13 +107,13 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-cream-50 flex items-center justify-center">
+      <div className="min-h-screen bg-linen-100 flex items-center justify-center">
         <div className="text-center py-16 px-4">
-          <ShoppingBag className="h-20 w-20 text-navy-300 mx-auto mb-6" />
-          <h1 className="font-serif text-2xl font-bold text-navy-800 mb-2">
+          <ShoppingBag className="h-20 w-20 text-espresso-300 mx-auto mb-6" />
+          <h1 className="font-serif text-2xl font-bold text-espresso-800 mb-2">
             {TR.cart.empty}
           </h1>
-          <p className="text-navy-600 mb-6">
+          <p className="text-espresso-600 mb-6">
             Antika koleksiyonumuzu keşfetmeye başlayın.
           </p>
           <Link to="/products">
@@ -91,9 +127,9 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-linen-100">
       {/* Header */}
-      <div className="bg-navy-900 text-cream-100 py-12">
+      <div className="bg-olive-800 text-linen-100 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-serif text-3xl md:text-4xl font-bold">{TR.cart.title}</h1>
         </div>
@@ -230,21 +266,50 @@ export default function CartPage() {
               </div>
 
               {error && (
-                <p className="text-red-600 text-sm mb-4">{error}</p>
+                <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg mb-4">
+                  {error}
+                </div>
+              )}
+
+              {paymentStep !== 'idle' && (
+                <div className="bg-gold-50 text-gold-800 text-sm p-3 rounded-lg mb-4 flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-gold-600 border-t-transparent"></div>
+                  {paymentStep === 'creating_order' && 'Sipariş oluşturuluyor...'}
+                  {paymentStep === 'redirecting' && 'Ödeme sayfasına yönlendiriliyorsunuz...'}
+                </div>
               )}
 
               <Button
                 size="lg"
-                className="w-full"
-                onClick={handleCheckout}
+                className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
+                onClick={handleShopierCheckout}
                 loading={loading}
+                disabled={loading}
               >
                 <CreditCard className="h-5 w-5 mr-2" />
-                {TR.cart.checkout}
+                {loading ? 'İşleniyor...' : 'Shopier ile Öde'}
               </Button>
 
+              <div className="mt-4 flex items-center justify-center gap-4 text-xs text-espresso-500">
+                <div className="flex items-center gap-1">
+                  <Lock className="h-3 w-3" />
+                  <span>256-bit SSL</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  <span>3D Secure</span>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-linen-200">
+                <p className="text-xs text-espresso-500 text-center">
+                  Ödeme işlemi güvenli Shopier altyapısı ile gerçekleştirilir.
+                  Taksit seçenekleri ödeme sayfasında görüntülenir.
+                </p>
+              </div>
+
               {!currentUser && (
-                <p className="text-sm text-navy-500 mt-4 text-center">
+                <p className="text-sm text-espresso-500 mt-4 text-center">
                   Ödeme yapmak için{' '}
                   <Link to="/login?redirect=/cart" className="text-gold-700 hover:underline">
                     giriş yapmalısınız
@@ -252,6 +317,15 @@ export default function CartPage() {
                   .
                 </p>
               )}
+
+              <div className="mt-4 pt-4 border-t border-linen-200">
+                <p className="text-xs text-espresso-400 text-center mb-2">Kabul Edilen Kartlar</p>
+                <div className="flex justify-center gap-2">
+                  <div className="bg-linen-100 px-2 py-1 rounded text-xs font-medium text-espresso-600">VISA</div>
+                  <div className="bg-linen-100 px-2 py-1 rounded text-xs font-medium text-espresso-600">Mastercard</div>
+                  <div className="bg-linen-100 px-2 py-1 rounded text-xs font-medium text-espresso-600">TROY</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
